@@ -1,6 +1,11 @@
 package SnakeAndLadders.models;
 
 import SnakeAndLadders.enums.GameState;
+import SnakeAndLadders.enums.PlayerType;
+import SnakeAndLadders.exceptions.BotCountException;
+import SnakeAndLadders.exceptions.InvalidBoardSizeException;
+import SnakeAndLadders.exceptions.InvalidDiceNumberException;
+import SnakeAndLadders.exceptions.SnackAndLadderIsTooHuge;
 import SnakeAndLadders.strategy.winningStrategies.WinningStrategy;
 
 import java.util.List;
@@ -151,7 +156,46 @@ public class Game {
             return this;
         }
 
+        private void validateBotCount(){
+            int count=0;
+            for(Player p:players){
+                if(p.getPlayerType()== PlayerType.BOT){
+                    count++;
+                }
+            }
+            if(count>1){
+                throw new BotCountException("Bot count is more then 1");
+            }
+        }
+
+        private void validateboardSize(){
+            if(size<3){
+                throw new InvalidBoardSizeException("Board size at least 3");
+            }
+        }
+
+        private void validateLadderandSnack(){
+            int max=(size*size-2)/2;
+            if(noOfSnakes+noOfLadders>max){
+                throw new SnackAndLadderIsTooHuge("Please Use Smallnumber of snacks and ladder for better experience of Game");
+            }
+        }
+
+        private void validateDiceCount(){
+            if(noOfDice<1 || noOfDice> size){
+                throw new InvalidDiceNumberException("For Better Dice Number use Number from "+1+" to "+noOfDice);
+            }
+        }
+
+        private void validate(){
+            validateBotCount();
+            validateboardSize();
+            validateLadderandSnack();
+            validateDiceCount();
+        }
+
         public Game build(){
+            validate();
             return new Game(
                     this.size,
                     this.players,
@@ -191,7 +235,6 @@ public class Game {
         } else if(cell.getSnake() != null){
             Snake s = cell.getSnake();
             int end = s.getEnd();
-            int start = s.getStart();
             player.setPos(end);
             System.out.println("You're bitten by a snake and now your position is " + end);
         }else{
