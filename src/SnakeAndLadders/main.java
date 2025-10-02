@@ -13,7 +13,7 @@ public class main {
 
     public static void main(String[] args) {
 
-        GameController gameController = new GameController();
+        GameController gameController = GameController.getInstance();
 
         Player Ankit = new Player("Ankit", 1, new Symbol('A'), PlayerType.HUMAN);
 
